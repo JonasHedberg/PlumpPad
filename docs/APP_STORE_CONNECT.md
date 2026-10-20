@@ -1,94 +1,94 @@
-# PlumpPad — App Store Connect web/privacy checklist
+# App Store Connect – PlumpPad: publiceringschecklista
 
-Prepared from the supplied `PlumpPad-iOS-main.zip` and Apple's current published requirements. Checked: **2026-09-14**.
+**Kontrollerad:** 20 oktober 2026  
+**Underlag:** uppladdade `PlumpPad-iOS-main.zip`, Apples publicerade dokumentation och GitHub Pages-dokumentation. Detta dokument är vägledning, inte en garanti om godkännande av Apple.
 
-## Recommended localized URLs
+## 1. Fält med färdiga URL:er
 
-Replace `<github-username>` with the GitHub account/organization that owns repository `PlumpPad`.
+| App Store Connect-fält | Svenska (sv-SE) | Engelska (en-US) | Status |
+|---|---|---|---|
+| **Privacy Policy URL** | `https://jonashedberg.github.io/PlumpPad/sv/privacy/` | `https://jonashedberg.github.io/PlumpPad/en/privacy/` | **Obligatorisk** |
+| **Support URL** | `https://jonashedberg.github.io/PlumpPad/sv/support/` | `https://jonashedberg.github.io/PlumpPad/en/support/` | **Obligatorisk** |
+| Marketing URL | `https://jonashedberg.github.io/PlumpPad/sv/` | `https://jonashedberg.github.io/PlumpPad/en/` | Valfri |
+| User Privacy Choices URL | `https://jonashedberg.github.io/PlumpPad/sv/privacy-choices/` | `https://jonashedberg.github.io/PlumpPad/en/privacy-choices/` | Valfri |
 
-### Swedish (Sweden)
+**Viktigt:** URL:erna är korrekta för repositoryt `JonasHedberg/PlumpPad` men får **inte** anges som fungerande förrän sajten verkligen publicerats och kontrollerats anonymt/utloggat. GitHub Pages bygger ofta webbplatsen efter commit.
 
-- Marketing URL: `https://<github-username>.github.io/PlumpPad/sv/`
-- Support URL: `https://<github-username>.github.io/PlumpPad/sv/support/`
-- Privacy Policy URL: `https://<github-username>.github.io/PlumpPad/sv/privacy/`
-- User Privacy Choices URL (optional, but prepared): `https://<github-username>.github.io/PlumpPad/sv/privacy-choices/`
+### Copyright-fältet
 
-### English (U.S.)
+Ange i **App Store Connect**: `2026 Jonas Hedberg` — **utan** copyrightsymbol eftersom Apple själv lägger till ©. På webbplatsen visas däremot exakt **© 2026 Jonas Hedberg**.
 
-- Marketing URL: `https://<github-username>.github.io/PlumpPad/en/`
-- Support URL: `https://<github-username>.github.io/PlumpPad/en/support/`
-- Privacy Policy URL: `https://<github-username>.github.io/PlumpPad/en/privacy/`
-- User Privacy Choices URL (optional, but prepared): `https://<github-username>.github.io/PlumpPad/en/privacy-choices/`
+## 2. Granskat i Swift-källkoden
 
-## App Privacy answer for the supplied build
+- Bundle-ID: `se.jonashedberg.plumppad`.
+- iOS och iPadOS, lägsta version iOS 26.0; svenska och engelska.
+- Spelet gäller en poängräknare för 2–8 spelare. Regler, bud/spärr för givarens sista bud, stick, poäng och resultat hanteras lokalt.
+- SwiftData-modeller: `PersistedGame` (pågående/avslutade spel) och `SavedPlayer` (sparade namn).
+- Inställningar i `@AppStorage` / `UserDefaults` (bland annat valfri historik).
+- PDF-generering/utskrift via systemets utskriftsfunktioner; CSV-export via iOS share sheet.
+- Inga nätverksanrop i granskad appkod; inga annonser, tredjepartsanalysverktyg, kontofunktioner eller spårnings-SDK:er i källkoden.
+- `PrivacyInfo.xcprivacy` anger `NSPrivacyTracking = false`, inga insamlade datatyper och required-reason `NSPrivacyAccessedAPICategoryUserDefaults` / `CA92.1`.
 
-Based on the inspected project:
+### App Privacy i App Store Connect
 
-- `PrivacyInfo.xcprivacy` declares `NSPrivacyCollectedDataTypes` as empty.
-- `NSPrivacyTracking` is `false`.
-- No tracking domains are declared.
-- No third-party Swift package dependencies are present in the Xcode project.
-- No networking APIs, analytics SDKs, advertising SDKs, account/authentication SDKs or CloudKit use were found in the supplied source.
-- SwiftData stores resumable games and reusable player names locally.
-- UserDefaults / `@AppStorage` stores local preferences; the privacy manifest declares required-reason API category `NSPrivacyAccessedAPICategoryUserDefaults` with reason `CA92.1`.
+För **den granskade versionen** talar underlaget för:
 
-For this exact reviewed build, the App Store Connect App Privacy questionnaire should therefore be answered:
+- **Data collection:** “No, we do not collect data from this app.”
+- **Tracking:** No.
+- **Third-party analytics:** No.
+- **Third-party ads:** No.
 
-**“No, we do not collect data from this app.”**
+Detta avser datainsamling genom **appen** av utvecklaren eller dess tredjepartsleverantörer. Apple definierar detta separat från lokal lagring. Användarinitierade utskrifter och exporter innebär inte i sig att utvecklaren tar emot data, men mottagaren behandlar naturligtvis filen enligt sin egen policy. **Bekräfta alltid svaren mot den faktiska produktionsbuilden**.
 
-Re-check this answer before every release if code, SDKs, networking, crash reporting, analytics, advertisements, accounts, cloud sync, or support tooling is added.
+## 3. Två återstående krav att åtgärda
 
-## What Apple currently requires
+### A. Offentlig integritetspolicy ska länkas *i appen* (viktigt)
 
-1. **Privacy Policy URL:** required for iOS apps. The policy must identify collected data (if any), uses, third-party sharing/protection, retention/deletion, and how consent can be revoked or data deletion handled.
-2. **App Privacy disclosure:** required for new apps and updates. If neither the developer nor third-party partners collect data from this build, App Store Connect allows “No, we do not collect data from this app.”
-3. **Support URL:** required and localizable. Apple's current help text says the URL must lead to actual contact information (legal address, email address or telephone number), as required by local law, for app issues, feedback and feature requests.
-4. **Marketing URL:** optional and localizable. The prepared home pages can be used.
-5. **User Privacy Choices URL:** optional. Pages are prepared because they make local deletion/retention controls clear.
-6. **Privacy link inside the app:** App Review Guideline 5.1.1(i) requires an easily accessible privacy-policy link inside the app as well as the App Store Connect metadata field.
-7. **License Agreement:** a custom EULA is optional. If none is supplied, Apple's Standard EULA applies.
+Apple App Review Guidelines **5.1.1(i)** kräver en lättillgänglig länk till policyn både i App Store Connect och inne i appen. I uppladdad `PlumpPad/Views/SettingsView.swift` finns en lokal `PrivacyPolicyView` med text, men ingen `Link`/`openURL` till den publika policyn.
 
-## Release blocker found in the supplied app
+**Åtgärd i Swiftprojektet innan inskick:** lägg till en synlig URL-länk under Inställningar → Integritetspolicy, lämpligen lokaliserade adresser till `sv/privacy/` och `en/privacy/`, och testkör i iPhone/iPad med internetåtkomst.
 
-The current SwiftUI Settings screen contains a privacy explanation but no visible link to the public privacy policy. Before App Review, add an easily accessible in-app `Link` to the deployed privacy URL (and ideally Support as well). This is required by App Review Guideline 5.1.1(i).
+### B. Ingen direkt e-postadress – kontaktkravet kan inte garanteras
 
-Because the developer's GitHub username is not known inside the static Swift project, add the final deployed URL after the repository owner is known, for example:
+Webbplatsen använder **endast GitHub Issues** för att kontakta apputvecklaren, enligt önskemål. Apple App Store Connect beskriver att Support URL ska leda till faktisk kontaktinformation (juridisk adress, e-postadress eller telefonnummer) när tillämplig lag kräver det. Guideline **1.5 Developer Information** anger att användare ska ha ett enkelt sätt att kontakta utvecklaren.
 
-```swift
-Link("Privacy Policy", destination: URL(string: "https://<github-username>.github.io/PlumpPad/en/privacy/")!)
-```
+**Bedömning:** GitHub Issues är en fungerande ärendeväg men kan **inte garanteras** uppfylla Apples tolkning eller lagstadgade kontaktkrav, särskilt om GitHub-inloggning krävs. Vi har inte hittat på kontaktinformation; publiceringsrisken kvarstår. Ett separat App Review-kontaktfält kan fortfarande kräva kontaktuppgifter som bara Apple ser.
 
-For a localized in-app destination, either link to a language-neutral landing route that lets the user choose language, or resolve `/sv/privacy/` vs `/en/privacy/` based on the app language.
+## 4. EU Digital Services Act (DSA)
 
-## Important Support URL caveat
+Deklarera trader-status i App Store Connect. Om du är **trader** och distribuerar i EU kräver Apple normalt att adress, telefon och e-post verifieras och visas på App Store-produktsidan. Om du är **non-trader** krävs inte dessa trader-uppgifter, men status ska ändå deklareras. Du avgör rätt status utifrån din verksamhet och Apples kriterier.
 
-The website intentionally contains **no direct email address**, per project requirement, and instead routes users to GitHub Issues in repository `PlumpPad`.
+Att webbplatsen inte visar e-post betyder **inte** att trader-kravet automatiskt är undantaget. Ange inte en felaktig status för att undvika exponering av kontaktuppgifter.
 
-Apple's current App Store Connect help explicitly says a Support URL must lead to “actual contact information (legal address, email address, telephone number), as may be required by local law.” GitHub Issues provides a real support channel but is not one of Apple's listed contact-information examples. Therefore this package cannot truthfully guarantee that an Issues-only page satisfies Apple's wording in every storefront or legal jurisdiction.
+## 5. Vad webbplatsen tillhandahåller
 
-To eliminate that submission risk without publishing an email address, add a real legal postal address or telephone number to the Support page if appropriate for the developer and applicable law. Do not invent one.
+- Publik, tvåspråkig integritetspolicy (obligatorisk).
+- Tvåspråkig supportsida med fungerande GitHub Issues-länkar (obligatorisk Support URL; se förbehåll ovan).
+- Startsida/marknadsförings-URL (valfri).
+- Privacy Choices/data deletion-sida (valfri; lämplig för tydlighet).
+- Villkor med länk till Apples Standard EULA (extra, inte ett uttryckligt generellt krav på separat Terms URL).
+- Regelbeskrivning och vanliga frågor (extra).
+- App Store copyright `2026 Jonas Hedberg`.
 
+## 6. Övrigt inför App Review (ingår inte i webbplatsen)
 
-## EU Digital Services Act (DSA)
+- [ ] Bygg och testa i Xcode på riktig simulator/iPhone/iPad.
+- [ ] Kontrollera `App Store Connect` → App Information: bundle-ID, kategori, åldersklassificering, territorier, content rights och DSA.
+- [ ] Ange **App Review contact** (separat kontaktinformation, inte offentlig supportsida; Apple kan kräva namn, telefon och e-post).
+- [ ] Slutför App Privacy-formuläret utifrån senast signerade builden.
+- [ ] Verifiera export compliance och eventuella andra lagliga deklarationer som App Store Connect kräver.
+- [ ] Ladda upp lämpliga skärmbilder, lokaliserad beskrivning/nyckelord och den faktiska builden.
+- [ ] Åtgärda länken till den publika integritetspolicyn inne i Swift-appen.
+- [ ] Publicera `docs/`; testa svenska och engelska URL:er anonymt.
+- [ ] Kontrollera att GitHub Issues är aktiverat, öppet och bevakas.
+- [ ] Bedöm om GitHub Issues ensamt duger för Support URL enligt Apple och lokal lag.
+- [ ] Ange copyrightfältet `2026 Jonas Hedberg` (Apple lägger till © automatiskt).
 
-App Store Connect requires you to declare whether the developer is a **trader** for DSA purposes. This declaration is separate from the website.
+## Officiella källor (kontrollerade 2026-10-20)
 
-- If you are **not a trader**, Apple says no trader contact information is required for display, but you still need to declare the status.
-- If you **are a trader** and distribute in the EU, Apple requires verified contact information for display on the App Store product page. For organizations this includes phone number and email address (the D-U-N-S address is used); for individuals it includes address/P.O. Box, phone number and email address.
-
-This means the website can remain free of a direct email address as requested, but an EU trader cannot avoid Apple displaying the required trader contact information on the App Store product page. Determine trader status based on your actual legal/commercial situation; do not choose a status merely to avoid publishing contact details.
-
-## GitHub Pages publishing
-
-GitHub officially supports publishing from `/docs` on a selected branch. Configure **Settings → Pages → Deploy from a branch → `/docs`**.
-
-## Official references
-
-- Apple — App privacy / Privacy Policy URL: https://developer.apple.com/help/app-store-connect/reference/app-information/app-privacy
-- Apple — Manage app privacy: https://developer.apple.com/help/app-store-connect/manage-app-information/manage-app-privacy
-- Apple — Platform version information / Support URL: https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information
-- Apple — App Review Guidelines §5.1.1: https://developer.apple.com/app-store/review/guidelines/
-- Apple — EU DSA trader requirements: https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements
-- Apple — Standard EULA behavior: https://developer.apple.com/help/app-store-connect/manage-app-information/provide-a-custom-license-agreement
-- Apple — Standard EULA: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-- GitHub — Configure a Pages publishing source: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+1. Apple – [App Store Connect: Platform version information](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information) (Support URL, copyright, App Review contact).
+2. Apple – [App privacy](https://developer.apple.com/help/app-store-connect/reference/app-privacy/) (obligatorisk integritetspolicy, valfri privacy choices).
+3. Apple – [Manage app privacy](https://developer.apple.com/help/app-store-connect/manage-app-information/manage-app-privacy).
+4. Apple – [App Review Guidelines, särskilt 1.5 och 5.1.1](https://developer.apple.com/app-store/review/guidelines/).
+5. Apple – [EU Digital Services Act trader requirements](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements).
+6. GitHub – [Configuring a publishing source](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
