@@ -1,7 +1,7 @@
 # App Store Connect – PlumpPad: publiceringschecklista
 
-**Kontrollerad:** 20 oktober 2026  
-**Underlag:** uppladdade `PlumpPad-iOS-main.zip`, Apples publicerade dokumentation och GitHub Pages-dokumentation. Detta dokument är vägledning, inte en garanti om godkännande av Apple.
+**Kontrollerad:** 27 oktober 2026  
+**Underlag:** uppladdade `PlumpPad-iOS-multirules.zip`, Apples publicerade dokumentation och GitHub Pages-dokumentation. Detta dokument är vägledning, inte en garanti om godkännande av Apple.
 
 ## 1. Fält med färdiga URL:er
 
@@ -21,9 +21,9 @@ Ange i **App Store Connect**: `2026 Jonas Hedberg` — **utan** copyrightsymbol 
 ## 2. Granskat i Swift-källkoden
 
 - Bundle-ID: `se.jonashedberg.plumppad`.
-- iOS och iPadOS, lägsta version iOS 26.0; svenska och engelska.
-- Spelet gäller en poängräknare för 2–8 spelare. Regler, bud/spärr för givarens sista bud, stick, poäng och resultat hanteras lokalt.
-- SwiftData-modeller: `PersistedGame` (pågående/avslutade spel) och `SavedPlayer` (sparade namn).
+- iOS och iPadOS, lägsta version iOS 26.0; 12 språklokaliseringar (`sv`, `en`, `de`, `fr`, `es`, `it`, `pl`, `nl`, `da`, `nb`, `fi`, `pt-PT`).
+- Appens svenska grundprofil stöder 2–8 spelare. Ytterligare elva regelprofiler och anpassningsbara husregler ingår; budspärr och poäng beror på vald regeluppsättning. Själva sticktagningen registreras av användaren.
+- SwiftData-modeller: `PersistedGame` (pågående/avslutade spel) och `SavedPlayer` (sparade namn) och `SavedRuleSet` (namngivna husregler).
 - Inställningar i `@AppStorage` / `UserDefaults` (bland annat valfri historik).
 - PDF-generering/utskrift via systemets utskriftsfunktioner; CSV-export via iOS share sheet.
 - Inga nätverksanrop i granskad appkod; inga annonser, tredjepartsanalysverktyg, kontofunktioner eller spårnings-SDK:er i källkoden.
@@ -46,7 +46,7 @@ Detta avser datainsamling genom **appen** av utvecklaren eller dess tredjepartsl
 
 Apple App Review Guidelines **5.1.1(i)** kräver en lättillgänglig länk till policyn både i App Store Connect och inne i appen. I uppladdad `PlumpPad/Views/SettingsView.swift` finns en lokal `PrivacyPolicyView` med text, men ingen `Link`/`openURL` till den publika policyn.
 
-**Åtgärd i Swiftprojektet innan inskick:** lägg till en synlig URL-länk under Inställningar → Integritetspolicy, lämpligen lokaliserade adresser till `sv/privacy/` och `en/privacy/`, och testkör i iPhone/iPad med internetåtkomst.
+**Åtgärd i Swiftprojektet innan inskick:** lägg till en synlig URL-länk under Inställningar → Integritetspolicy, lämpligen en adress till rätt språkversion av `/privacy/` (eller en publik standardsida som låter användaren välja språk), och testkör i iPhone/iPad med internetåtkomst.
 
 ### B. Ingen direkt e-postadress – kontaktkravet kan inte garanteras
 
@@ -62,8 +62,8 @@ Att webbplatsen inte visar e-post betyder **inte** att trader-kravet automatiskt
 
 ## 5. Vad webbplatsen tillhandahåller
 
-- Publik, tvåspråkig integritetspolicy (obligatorisk).
-- Tvåspråkig supportsida med fungerande GitHub Issues-länkar (obligatorisk Support URL; se förbehåll ovan).
+- Publik integritetspolicy på 12 språk (obligatorisk).
+- Supportsida på 12 språk med fungerande GitHub Issues-länkar (obligatorisk Support URL; se förbehåll ovan).
 - Startsida/marknadsförings-URL (valfri).
 - Privacy Choices/data deletion-sida (valfri; lämplig för tydlighet).
 - Villkor med länk till Apples Standard EULA (extra, inte ett uttryckligt generellt krav på separat Terms URL).
@@ -79,7 +79,7 @@ Att webbplatsen inte visar e-post betyder **inte** att trader-kravet automatiskt
 - [ ] Verifiera export compliance och eventuella andra lagliga deklarationer som App Store Connect kräver.
 - [ ] Ladda upp lämpliga skärmbilder, lokaliserad beskrivning/nyckelord och den faktiska builden.
 - [ ] Åtgärda länken till den publika integritetspolicyn inne i Swift-appen.
-- [ ] Publicera `docs/`; testa svenska och engelska URL:er anonymt.
+- [ ] Publicera `docs/`; testa samtliga 12 språkversioner och deras Privacy/Support-URL:er anonymt.
 - [ ] Kontrollera att GitHub Issues är aktiverat, öppet och bevakas.
 - [ ] Bedöm om GitHub Issues ensamt duger för Support URL enligt Apple och lokal lag.
 - [ ] Ange copyrightfältet `2026 Jonas Hedberg` (Apple lägger till © automatiskt).
@@ -92,3 +92,23 @@ Att webbplatsen inte visar e-post betyder **inte** att trader-kravet automatiskt
 4. Apple – [App Review Guidelines, särskilt 1.5 och 5.1.1](https://developer.apple.com/app-store/review/guidelines/).
 5. Apple – [EU Digital Services Act trader requirements](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements).
 6. GitHub – [Configuring a publishing source](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+
+## 7. Extra kontrollpunkter för multirules-versionen (27 oktober 2026)
+
+- [ ] Verifiera samtliga tolv förinställda regelprofiler på riktig iOS-enhet, särskilt negativa poäng, Clag specialgiv 9/15 och 7-truf.
+- [ ] Avgränsa spelarmängden i husregler till vad Nytt spel stöder, eller utöka namnlistan: `HouseRulesView.swift` kan välja max 10, medan `NewGameView.swift` håller en namnlista för 8 spelare. Kontrollera kraschrisken om 9–10 väljs.
+- [ ] Kontrollera ”Simultaneous reveal”: `GameRules.biddingStyle` kan vara `.simultaneous` men `BiddingView`/`PlumpRules.currentBidderIndex` implementerar fortfarande löpande budgivning. Antingen implementera faktisk samtidig budgivning eller märk alternativet tydligt.
+- [ ] Kontrollera förhandsvisning av poäng i `ScoringView.swift`: den använder `PlumpRules.score(bid:tricks:)` (svensk standard), medan `finalizeCurrentRound` använder `game.effectiveRules.score`. För övriga regelprofiler kan visad preliminär poäng avvika från slutpoäng.
+- [ ] Överväg hantering för att radera `SavedRuleSet` utan ominstallation; nu finns uppdatering/överskrivning men ingen separat borttagningsvy.
+- [ ] Uppdatera den inbyggda allmänna `RulesView` så att användaren inte tolkar enbart svensk standard som reglerna för pågående alternativ profil.
+- [ ] Den offentliga privacy-länken i själva appen saknas fortfarande i `SettingsView.swift` enligt denna granskning. Krävs enligt Apple 5.1.1.
+
+Dessa punkter är observationer från källkod; de har **inte** verifierats i iOS-simulator eller på fysisk enhet här.
+
+## 8. Språklokaliseringar i senaste appversionen (28 oktober 2026)
+
+**Korrigering:** Den tidigare anteckningen om att appen bara stöder svenska och engelska var fel. `PlumpPad/Localizable.xcstrings` har lokaliseringsposter för `sv`, `en`, `de`, `fr`, `es`, `it`, `pl`, `nl`, `da`, `nb`, `fi` och `pt-PT`. Vissa poster är markerade som maskinöversatta i Xcode och bör språkgranskas före publicering.
+
+På GitHub Pages finns följande **sex sidor per språk**: startsida, regler, integritet, support, dataval och användningsvillkor. Använd `https://jonashedberg.github.io/PlumpPad/<språkkod>/privacy/` respektive `/support/` för respektive lokalisering i App Store Connect, när den publicerade sajten är testad.
+
+Kontrollera även att Swift-appens länkar öppnar motsvarande språkversioner. Webbplatsen är klar för att stödja detta, men Swift-projektet har inte ändrats i denna leverans.
